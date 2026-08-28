@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>遊びのお誘い</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Yu Gothic", Meiryo, sans-serif;
+    background: linear-gradient(135deg, #fff7e6, #eaf7ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #333;
+  }
+  .card {
+    width: min(90vw, 620px);
+    padding: 42px 34px;
+    background: rgba(255,255,255,.94);
+    border-radius: 24px;
+    box-shadow: 0 18px 55px rgba(0,0,0,.12);
+    text-align: center;
+  }
+  h1 { margin: 0 0 24px; font-size: 32px; }
+  .letter {
+    text-align: left;
+    background: #fffdf7;
+    border: 1px solid #eee4cc;
+    border-radius: 16px;
+    padding: 24px;
+    line-height: 1.9;
+    margin-bottom: 28px;
+  }
+  .question { font-size: 22px; font-weight: 700; margin-bottom: 22px; }
+  #arena {
+    position: relative;
+    height: 170px;
+    border-radius: 18px;
+    background: #f7f9fc;
+    border: 1px dashed #d6dce5;
+    overflow: hidden;
+  }
+  button {
+    position: absolute;
+    border: 0;
+    border-radius: 14px;
+    padding: 14px 25px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: left .15s ease, top .15s ease, transform .12s ease;
+    touch-action: manipulation;
+  }
+  #yes {
+    background: #4caf50;
+    color: white;
+    left: 28%;
+    top: 58px;
+    box-shadow: 0 5px 12px rgba(76,175,80,.25);
+  }
+  #yes:hover { transform: scale(1.05); }
+  #no {
+    background: #ff6b6b;
+    color: white;
+    left: 57%;
+    top: 58px;
+  }
+  #message {
+    min-height: 30px;
+    margin-top: 16px;
+    font-weight: 700;
+    color: #666;
+  }
+  #success { display: none; }
+  .big { font-size: 42px; margin-bottom: 12px; }
+  .success-text { font-size: 23px; font-weight: 800; }
+  .small { margin-top: 18px; color: #777; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <section id="invite">
+      <h1>📨 遊びのお誘い</h1>
+
+      <div class="letter">
+        ○○へ<br><br>
+        突然ですが、今度一緒に遊びに行きませんか？<br>
+        楽しい時間を過ごせたらと思っています。<br><br>
+        ぜひ検討してください。<br>
+        ……ということで、下から選んでください。
+      </div>
+
+      <div class="question">一緒に遊びに行く？</div>
+
+      <div id="arena">
+        <button id="yes">決定！ 👍</button>
+        <button id="no">いいえ</button>
+      </div>
+
+      <div id="message">「いいえ」も一応用意してあります。</div>
+    </section>
+
+    <section id="success">
+      <div class="big">🎉😎🎉</div>
+      <div class="success-text">遊ぶことが決定しました！</div>
+      <p>異議申し立ては受け付けません。</p>
+      <p class="small">あとは日程を決めよう！</p>
+    </section>
+  </main>
+
+<script>
+const no = document.getElementById("no");
+const yes = document.getElementById("yes");
+const arena = document.getElementById("arena");
+const message = document.getElementById("message");
+
+const messages = [
+  "おっと、そこじゃないよ。",
+  "逃げるな！！",
+  "そのボタンは押せません。",
+  "本当に「いいえ」でいいの？",
+  "残念！また逃げました。",
+  "決定ボタンがおすすめです。",
+  "そろそろ諦めよう。",
+  "「いいえ」は飾りです。"
+];
+let count = 0;
+
+function escapeNo() {
+  const maxX = arena.clientWidth - no.offsetWidth - 8;
+  const maxY = arena.clientHeight - no.offsetHeight - 8;
+  const x = Math.max(8, Math.random() * maxX);
+  const y = Math.max(8, Math.random() * maxY);
+  no.style.left = x + "px";
+  no.style.top = y + "px";
+  no.style.transform = `rotate(${(Math.random()*16)-8}deg)`;
+  message.textContent = messages[count % messages.length];
+  count++;
+}
+
+["mouseenter", "pointerdown", "touchstart", "focus"].forEach(eventName => {
+  no.addEventListener(eventName, e => {
+    if (eventName !== "mouseenter") e.preventDefault();
+    escapeNo();
+  }, {passive:false});
+});
+
+no.addEventListener("click", e => {
+  e.preventDefault();
+  escapeNo();
+});
+
+yes.addEventListener("click", () => {
+  document.getElementById("invite").style.display = "none";
+  document.getElementById("success").style.display = "block";
+});
+</script>
+</body>
+</html>
